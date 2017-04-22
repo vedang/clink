@@ -1,4 +1,4 @@
-(ns clink.socket-window-wordcount
+(ns clink.streaming.examples.socket.socket-window-wordcount
   (:gen-class)
   (:require [clojure.string :as cs])
   (:import [clink.examples.wordcount IWordWithCount WordWithCount]
