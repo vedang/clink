@@ -1,22 +1,9 @@
 (ns clink.socket-window-wordcount
   (:gen-class)
   (:require [clojure.string :as cs])
-  (:import [org.apache.flink.api.common.functions FlatMapFunction ReduceFunction]
-           org.apache.flink.api.java.functions.KeySelector
+  (:import [clink.examples.wordcount IWordWithCount WordWithCount]
            org.apache.flink.streaming.api.environment.StreamExecutionEnvironment
            org.apache.flink.streaming.api.windowing.time.Time))
-
-(defrecord WordWithCount
-    [word wcount]
-  Object
-  (toString [this]
-    (str word ": " wcount)))
-
-(defrecord WordKeySelector
-    []
-  KeySelector
-  (getKey [this value]
-    (:word value)))
 
 (defn -main
   [& args]
@@ -27,20 +14,23 @@
                                 "\n")
         window-counts (.. text
                           (flatMap (reify
-                                     FlatMapFunction
+                                     IWordWithCount
                                      (flatMap [this value out]
                                        (doseq [word (cs/split value #"\s")]
+                                         (println "Word: " word)
                                          (.collect out
                                                    (WordWithCount. word 1))))))
-                          (returns clink.socket_window_wordcount.WordWithCount)
-                          (keyBy (WordKeySelector.))
+                          (keyBy (reify
+                                   IWordWithCount
+                                   (getKey [this word-with-count]
+                                     (.word ^WordWithCount word-with-count))))
                           (timeWindow (Time/seconds 5))
                           (reduce (reify
-                                    ReduceFunction
+                                    IWordWithCount
                                     (reduce [this a b]
-                                      (WordWithCount. (:word a)
-                                                      (+ (:wcount a)
-                                                         (:wcount b)))))))]
+                                      (WordWithCount. (.word ^WordWithCount a)
+                                                      (+ (.wcount ^WordWithCount a)
+                                                         (.wcount ^WordWithCount b)))))))]
     (.. window-counts
         print
         (setParallelism 1))

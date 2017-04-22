@@ -16,5 +16,6 @@
                                  [:artifactId tycho-compiler-jdt]
                                  [:version "1.0.0"]]}]]
   :global-vars {*warn-on-reflection* true}
+  :java-source-paths ["src/main/java"]
   :aot [clink.socket-window-wordcount]
   :main clink.socket-window-wordcount)
