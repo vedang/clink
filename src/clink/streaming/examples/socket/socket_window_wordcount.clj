@@ -38,4 +38,4 @@
     (.. window-counts
         print
         (setParallelism 1))
-    (.execute execution-env "Socket Window WordCount")))
+    (.execute execution-env "Socket Window WordCount Example")))
