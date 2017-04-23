@@ -19,5 +19,6 @@
   :global-vars {*warn-on-reflection* true}
   :java-source-paths ["src/main/java"]
   :aot [clink.streaming.examples.socket.socket-window-wordcount
-        clink.streaming.examples.kafka.read-from-kafka]
-  :main clink.streaming.examples.kafka.read-from-kafka)
+        clink.streaming.examples.kafka.read-from-kafka
+        clink.streaming.examples.kafka.write-into-kafka]
+  :main clink.streaming.examples.kafka.write-into-kafka)
