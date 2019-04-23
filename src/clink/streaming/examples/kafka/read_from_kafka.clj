@@ -19,7 +19,7 @@
         properties (doto (Properties.)
                      (.setProperty "bootstrap.servers" "localhost:9092")
                      (.setProperty "group.id" "clink_consumers"))
-        consumer (FlinkKafkaConsumer010. "flinky"
+        consumer (FlinkKafkaConsumer010. "flinkyclinky"
                                          (SimpleStringSchema.)
                                          properties)
         message-stream (.addSource env consumer)]

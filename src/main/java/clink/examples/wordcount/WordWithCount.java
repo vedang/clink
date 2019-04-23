@@ -4,6 +4,8 @@ public class WordWithCount {
     public String word;
     public Long wcount;
 
+    public WordWithCount() {}
+
     public WordWithCount(String word, long wcount) {
         this.word = word;
         this.wcount = wcount;

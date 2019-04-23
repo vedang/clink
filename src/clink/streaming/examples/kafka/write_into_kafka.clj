@@ -32,7 +32,7 @@
                      (.setProperty "bootstrap.servers" "localhost:9092"))
         ;; source (RunningSource. (atom true))
         source (KafkaRunningSource.)
-        sink (FlinkKafkaProducer010. "flinky"
+        sink (FlinkKafkaProducer010. "flinkyclinky"
                                      (SimpleStringSchema.)
                                      properties)
         message-stream (.addSource env source)]

@@ -6,24 +6,27 @@
            org.apache.flink.streaming.api.environment.StreamExecutionEnvironment
            org.apache.flink.streaming.api.windowing.time.Time))
 
-
-(defrecord FlinkyWordCounter
-    []
+(defrecord WordCounter
+    [^String word ^Long wcount]
   :load-ns true
   IWordWithCount
-  (flatMap [this value out]
-    (doseq [word (cs/split value #"\s")]
-      (println "Word: " word)
-      (.collect out
-                (WordWithCount. word 1))))
+  (flatMap [_ value collector]
+    (doseq [w (cs/split value #"\s")]
+      (println "Word: " w)
+      (.collect collector
+                (WordCounter. w 1))))
 
-  (getKey [this word-with-count]
-    (.word ^WordWithCount word-with-count))
+  (getKey [_ word-with-count]
+    (.word ^WordCounter word-with-count))
 
-  (reduce [this a b]
-    (WordWithCount. (.word ^WordWithCount a)
-                    (+ (.wcount ^WordWithCount a)
-                       (.wcount ^WordWithCount b)))))
+  (reduce [_ a b]
+    (WordCounter. (.word ^WordCounter a)
+                  (+ (.wcount ^WordCounter a)
+                     (.wcount ^WordCounter b))))
+
+  Object
+  (toString [_]
+    (str word ": " wcount)))
 
 
 (defn -main
@@ -33,7 +36,7 @@
                                 "localhost"
                                 9000
                                 "\n")
-        ^IWordWithCount word-counter-helper (FlinkyWordCounter.)
+        ^IWordWithCount word-counter-helper (WordCounter. "<begin>" 1)
         window-counts (.. text
                           (flatMap word-counter-helper)
                           (keyBy word-counter-helper)
